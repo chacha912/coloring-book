@@ -1,0 +1,12 @@
+{
+  "name": "simple-whiteboard",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite --port 3001",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^2.8.0"
+  }
+}
