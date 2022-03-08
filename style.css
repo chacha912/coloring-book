@@ -29,3 +29,17 @@ canvas {
   width: 20px;
   height: 20px;
 }
+
+.toolbar {
+  position: absolute;
+  top: 40%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-item {
+  margin-bottom: 4px;
+  padding: 10px;
+  cursor: pointer;
+}
