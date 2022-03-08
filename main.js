@@ -1,11 +1,15 @@
 import { nanoid } from 'nanoid';
 import materialColors from './material-colors';
 
+const toolbar = document.querySelector('.toolbar');
+
 const canvas = document.querySelector('.canvas');
 const ctx = canvas.getContext('2d');
 const paths = {};
 let currentPathId = null;
 let currentStrokeStyle = '#000';
+let mode = 'pen';
+let rectInitPoint = null;
 
 function initCanvas() {
   // set canvas size
@@ -24,37 +28,97 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   Object.keys(paths).forEach((pathId) => {
-    const { points, strokeStyle } = paths[pathId];
+    const { mode, points, strokeStyle } = paths[pathId];
     ctx.beginPath();
-    points.forEach((point, i) => {
-      if (i === 0) ctx.moveTo(point.x, point.y);
-      else ctx.lineTo(point.x, point.y);
-    });
     ctx.strokeStyle = strokeStyle;
-    ctx.stroke();
+
+    switch (mode) {
+      case 'pen':
+        points.forEach((point, i) => {
+          if (i === 0) ctx.moveTo(point.x, point.y);
+          else ctx.lineTo(point.x, point.y);
+        });
+
+        ctx.stroke();
+
+        break;
+
+      case 'rectangle':
+        ctx.strokeRect(...points);
+        break;
+
+      default:
+        break;
+    }
+    ctx.closePath();
   });
 }
 
 canvas.addEventListener('mousedown', (e) => {
   currentPathId = nanoid();
-  const point1 = { x: e.clientX, y: e.clientY };
-  const point2 = { x: e.clientX + 0.001, y: e.clientY + 0.001 }; // paint point on click
 
-  paths[currentPathId] = { strokeStyle: currentStrokeStyle };
-  paths[currentPathId].points = [point1, point2];
+  const path = {};
+  path.mode = mode;
+  path.strokeStyle = currentStrokeStyle;
+
+  switch (mode) {
+    case 'pen':
+      const point1 = { x: e.offsetX, y: e.offsetY };
+      const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 }; // paint point on click
+
+      path.points = [point1, point2];
+      break;
+
+    case 'rectangle':
+      rectInitPoint = { x: e.offsetX, y: e.offsetY };
+      path.points = [e.offsetX, e.offsetY, 1, 1];
+
+    default:
+      break;
+  }
+
+  paths[currentPathId] = path;
   render();
 });
 
 canvas.addEventListener('mousemove', (e) => {
-  if (currentPathId) {
-    const point = { x: e.offsetX, y: e.offsetY };
-    paths[currentPathId].points.push(point);
-    render();
+  if (!currentPathId) return;
+
+  const path = paths[currentPathId];
+  switch (mode) {
+    case 'pen':
+      const point = { x: e.offsetX, y: e.offsetY };
+      path.points.push(point);
+      break;
+
+    case 'rectangle':
+      const { x: x1, y: y1 } = rectInitPoint;
+      const { offsetX: x2, offsetY: y2 } = e;
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+
+      let initPoint = { x: x1, y: y1 };
+
+      if (dx > 0 && dy < 0) {
+        initPoint.y = y2;
+      } else if (dx < 0 && dy > 0) {
+        initPoint.x = x2;
+      } else if (dx < 0 && dy < 0) {
+        initPoint.x = x2;
+        initPoint.y = y2;
+      }
+
+      path.points = [initPoint.x, initPoint.y, Math.abs(dx), Math.abs(dy)];
+
+    default:
+      break;
   }
+  render();
 });
 
 document.addEventListener('mouseup', (e) => {
   currentPathId = null;
+  rectInitPoint = null;
 });
 
 function initColorPanel(colorPalette) {
@@ -88,6 +152,11 @@ function initColorPanel(colorPalette) {
     currentStrokeStyle = e.target.getAttribute('data-color');
   });
 }
+
+toolbar.addEventListener('click', (e) => {
+  if (!e.target.classList.contains('toolbar-item')) return;
+  mode = e.target.getAttribute('data-mode');
+});
 
 initCanvas();
 initColorPanel(materialColors);
