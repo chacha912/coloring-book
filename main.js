@@ -29,38 +29,53 @@ function render() {
   Object.keys(paths).forEach((pathId) => {
     const { mode, points, strokeStyle } = paths[pathId];
     ctx.beginPath();
+
     ctx.strokeStyle = strokeStyle;
 
-    switch (mode) {
-      case 'pen':
-        points.forEach((point, i) => {
-          if (i === 0) ctx.moveTo(point.x, point.y);
-          else {
-            const controlPoint = points[i - 1];
+    points.forEach((point, i) => {
+      if (i === 0) ctx.moveTo(point.x, point.y);
+      else {
+        const controlPoint = points[i - 1];
 
-            const endPoint = {
-              x: (controlPoint.x + point.x) / 2,
-              y: (controlPoint.y + point.y) / 2,
-            };
+        const endPoint = {
+          x: (controlPoint.x + point.x) / 2,
+          y: (controlPoint.y + point.y) / 2,
+        };
 
-            ctx.quadraticCurveTo(
-              controlPoint.x,
-              controlPoint.y,
-              endPoint.x,
-              endPoint.y
-            );
-          }
-        });
+        ctx.quadraticCurveTo(
+          controlPoint.x,
+          controlPoint.y,
+          endPoint.x,
+          endPoint.y
+        );
+      }
+    });
 
-        ctx.stroke();
+    ctx.stroke();
 
-        break;
-
-      default:
-        break;
-    }
     ctx.closePath();
   });
+}
+
+function getCrayonPattern(color) {
+  const patternCanvas = document.createElement('canvas');
+  const ctx = patternCanvas.getContext('2d');
+  const size = 100;
+  patternCanvas.width = size;
+  patternCanvas.height = size;
+
+  for (let i = size * size; i--; ) {
+    const x = getRandomFloat(0, size);
+    const y = getRandomFloat(0, size);
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, 1, 1);
+  }
+
+  return ctx.createPattern(patternCanvas, 'repeat');
+}
+
+function getRandomFloat(min, max) {
+  return Math.random() * (max - min) + min;
 }
 
 canvas.addEventListener('mousedown', (e) => {
@@ -68,18 +83,17 @@ canvas.addEventListener('mousedown', (e) => {
 
   const path = {};
   path.mode = mode;
-  path.strokeStyle = currentStrokeStyle;
 
-  switch (mode) {
-    case 'pen':
-      const point1 = { x: e.offsetX, y: e.offsetY };
-      const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 }; // paint point on click
-
-      path.points = [point1, point2];
-      break;
-    default:
-      break;
+  if (mode === 'pen') {
+    path.strokeStyle = currentStrokeStyle;
+  } else if (mode === 'crayon') {
+    path.strokeStyle = getCrayonPattern(currentStrokeStyle);
   }
+
+  const point1 = { x: e.offsetX, y: e.offsetY };
+  const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 }; // paint point on click
+
+  path.points = [point1, point2];
 
   paths[currentPathId] = path;
   render();
@@ -89,14 +103,9 @@ canvas.addEventListener('mousemove', (e) => {
   if (!currentPathId) return;
 
   const path = paths[currentPathId];
-  switch (mode) {
-    case 'pen':
-      const point = { x: e.offsetX, y: e.offsetY };
-      path.points.push(point);
-      break;
-    default:
-      break;
-  }
+  const point = { x: e.offsetX, y: e.offsetY };
+  path.points.push(point);
+
   render();
 });
 
