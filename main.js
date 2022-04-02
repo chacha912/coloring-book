@@ -9,7 +9,6 @@ const paths = {};
 let currentPathId = null;
 let currentStrokeStyle = '#000';
 let mode = 'pen';
-let rectInitPoint = null;
 
 function initCanvas() {
   // set canvas size
@@ -57,10 +56,6 @@ function render() {
 
         break;
 
-      case 'rectangle':
-        ctx.strokeRect(...points);
-        break;
-
       default:
         break;
     }
@@ -82,11 +77,6 @@ canvas.addEventListener('mousedown', (e) => {
 
       path.points = [point1, point2];
       break;
-
-    case 'rectangle':
-      rectInitPoint = { x: e.offsetX, y: e.offsetY };
-      path.points = [e.offsetX, e.offsetY, 1, 1];
-
     default:
       break;
   }
@@ -104,26 +94,6 @@ canvas.addEventListener('mousemove', (e) => {
       const point = { x: e.offsetX, y: e.offsetY };
       path.points.push(point);
       break;
-
-    case 'rectangle':
-      const { x: x1, y: y1 } = rectInitPoint;
-      const { offsetX: x2, offsetY: y2 } = e;
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-
-      let initPoint = { x: x1, y: y1 };
-
-      if (dx > 0 && dy < 0) {
-        initPoint.y = y2;
-      } else if (dx < 0 && dy > 0) {
-        initPoint.x = x2;
-      } else if (dx < 0 && dy < 0) {
-        initPoint.x = x2;
-        initPoint.y = y2;
-      }
-
-      path.points = [initPoint.x, initPoint.y, Math.abs(dx), Math.abs(dy)];
-
     default:
       break;
   }
@@ -132,7 +102,6 @@ canvas.addEventListener('mousemove', (e) => {
 
 document.addEventListener('mouseup', (e) => {
   currentPathId = null;
-  rectInitPoint = null;
 });
 
 function initColorPanel(colorPalette) {
