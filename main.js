@@ -9,13 +9,12 @@ const paths = {};
 let currentPathId = null;
 let currentStrokeStyle = '#000';
 let mode = 'pen';
+const CANVAS_SIZE = 700;
 
 function initCanvas() {
-  // set canvas size
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  canvas.style.width = window.innerWidth + 'px';
-  canvas.style.height = window.innerHeight + 'px';
+  // set canvas sizethis.canvas.width = CANVAS_SIZE;
+  canvas.width = CANVAS_SIZE;
+  canvas.height = CANVAS_SIZE;
 
   // set stroke options
   ctx.lineCap = 'round';
@@ -151,4 +150,4 @@ toolbar.addEventListener('click', (e) => {
 });
 
 initCanvas();
-initColorPanel(materialColors);
+// initColorPanel(materialColors);
