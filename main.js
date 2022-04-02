@@ -21,7 +21,7 @@ function initCanvas() {
   // set stroke options
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  ctx.lineWidth = 6;
+  ctx.lineWidth = 10;
 }
 
 function render() {
@@ -36,7 +36,21 @@ function render() {
       case 'pen':
         points.forEach((point, i) => {
           if (i === 0) ctx.moveTo(point.x, point.y);
-          else ctx.lineTo(point.x, point.y);
+          else {
+            const controlPoint = points[i - 1];
+
+            const endPoint = {
+              x: (controlPoint.x + point.x) / 2,
+              y: (controlPoint.y + point.y) / 2,
+            };
+
+            ctx.quadraticCurveTo(
+              controlPoint.x,
+              controlPoint.y,
+              endPoint.x,
+              endPoint.y
+            );
+          }
         });
 
         ctx.stroke();
