@@ -12,6 +12,7 @@ class App {
     this.mode = 'marker';
 
     this.toolbar = document.querySelector('.toolbar');
+    this.toolItem = document.querySelector('.toolbar-item.selected');
     this.colorPanel = document.querySelector('.color-panel');
 
     this.initCanvas();
@@ -87,10 +88,12 @@ class App {
       const target = e.target.closest('.toolbar-item');
       if (!target) return;
 
-      this.mode = target.getAttribute('data-mode');
-
       const currTool = document.querySelector('.toolbar-item.selected');
       if (currTool === target) return;
+
+      this.mode = target.getAttribute('data-mode');
+      this.toolItem = target;
+      this.currentStrokeStyle = target.getAttribute('data-color');
 
       currTool.classList.remove('selected');
       target.classList.add('selected');
@@ -100,7 +103,10 @@ class App {
       const target = e.target.closest('.color-pick');
       if (!target) return;
 
-      this.currentStrokeStyle = target.getAttribute('data-color');
+      const color = target.getAttribute('data-color');
+      this.currentStrokeStyle = color;
+      this.toolItem.style.fill = color;
+      this.toolItem.setAttribute('data-color', color);
     });
 
     this.canvas.addEventListener('mousedown', (e) => {
