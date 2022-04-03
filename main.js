@@ -8,8 +8,8 @@ class App {
     this.ctx = this.canvas.getContext('2d');
     this.paths = {};
     this.currentPathId = null;
-    this.currentStrokeStyle = '#000';
-    this.mode = 'marker';
+    this.currentStrokeStyle = this.getCrayonPattern('#000');
+    this.mode = 'crayon';
 
     this.toolbar = document.querySelector('.toolbar');
     this.toolItem = document.querySelector('.toolbar-item.selected');
@@ -95,6 +95,13 @@ class App {
       this.toolItem = target;
       this.currentStrokeStyle = target.getAttribute('data-color');
 
+      if (this.mode === 'marker') {
+        this.colorPanel.classList.remove('crayon-mode');
+        this.colorPanel.classList.add('marker-mode');
+      } else if (this.mode === 'crayon') {
+        this.colorPanel.classList.remove('marker-mode');
+        this.colorPanel.classList.add('crayon-mode');
+      }
       currTool.classList.remove('selected');
       target.classList.add('selected');
     });
