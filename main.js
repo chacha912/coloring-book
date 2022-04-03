@@ -1,176 +1,169 @@
 import { nanoid } from 'nanoid';
-import materialColors from './material-colors';
 
-const toolbar = document.querySelector('.toolbar');
+const CANVAS_SIZE = 700;
 
-const canvas = document.querySelector('.canvas');
-const ctx = canvas.getContext('2d');
-const paths = {};
-let currentPathId = null;
-let currentStrokeStyle = '#000';
-let mode = 'pen';
-let rectInitPoint = null;
+class App {
+  constructor() {
+    this.canvas = document.querySelector('.canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.paths = {};
+    this.currentPathId = null;
+    this.currentStrokeStyle = this.getCrayonPattern('#000');
+    this.mode = 'crayon';
 
-function initCanvas() {
-  // set canvas size
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  canvas.style.width = window.innerWidth + 'px';
-  canvas.style.height = window.innerHeight + 'px';
+    this.toolbar = document.querySelector('.toolbar');
+    this.toolItem = document.querySelector('.toolbar-item.selected');
+    this.colorPanel = document.querySelector('.color-panel');
 
-  // set stroke options
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.lineWidth = 10;
-}
+    this.initCanvas();
+    this.setEvent();
+  }
 
-function render() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  initCanvas() {
+    this.canvas.width = CANVAS_SIZE;
+    this.canvas.height = CANVAS_SIZE;
 
-  Object.keys(paths).forEach((pathId) => {
-    const { mode, points, strokeStyle } = paths[pathId];
-    ctx.beginPath();
-    ctx.strokeStyle = strokeStyle;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.lineWidth = 10;
+  }
 
-    switch (mode) {
-      case 'pen':
-        points.forEach((point, i) => {
-          if (i === 0) ctx.moveTo(point.x, point.y);
-          else {
-            const controlPoint = points[i - 1];
+  render() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-            const endPoint = {
-              x: (controlPoint.x + point.x) / 2,
-              y: (controlPoint.y + point.y) / 2,
-            };
+    Object.keys(this.paths).forEach((pathId) => {
+      const { mode, points, strokeStyle } = this.paths[pathId];
+      this.ctx.beginPath();
 
-            ctx.quadraticCurveTo(
-              controlPoint.x,
-              controlPoint.y,
-              endPoint.x,
-              endPoint.y
-            );
-          }
-        });
+      this.ctx.strokeStyle = strokeStyle;
 
-        ctx.stroke();
+      points.forEach((point, i) => {
+        if (i === 0) this.ctx.moveTo(point.x, point.y);
+        else {
+          const controlPoint = points[i - 1];
 
-        break;
+          const endPoint = {
+            x: (controlPoint.x + point.x) / 2,
+            y: (controlPoint.y + point.y) / 2,
+          };
 
-      case 'rectangle':
-        ctx.strokeRect(...points);
-        break;
+          this.ctx.quadraticCurveTo(
+            controlPoint.x,
+            controlPoint.y,
+            endPoint.x,
+            endPoint.y
+          );
+        }
+      });
 
-      default:
-        break;
+      this.ctx.stroke();
+
+      this.ctx.closePath();
+    });
+  }
+
+  getCrayonPattern(color) {
+    const patternCanvas = document.createElement('canvas');
+    const ctx = patternCanvas.getContext('2d');
+    const size = 100;
+    patternCanvas.width = size;
+    patternCanvas.height = size;
+
+    for (let i = size * size; i--; ) {
+      const x = this.getRandomFloat(0, size);
+      const y = this.getRandomFloat(0, size);
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, 1, 1);
     }
-    ctx.closePath();
-  });
-}
 
-canvas.addEventListener('mousedown', (e) => {
-  currentPathId = nanoid();
-
-  const path = {};
-  path.mode = mode;
-  path.strokeStyle = currentStrokeStyle;
-
-  switch (mode) {
-    case 'pen':
-      const point1 = { x: e.offsetX, y: e.offsetY };
-      const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 }; // paint point on click
-
-      path.points = [point1, point2];
-      break;
-
-    case 'rectangle':
-      rectInitPoint = { x: e.offsetX, y: e.offsetY };
-      path.points = [e.offsetX, e.offsetY, 1, 1];
-
-    default:
-      break;
+    return ctx.createPattern(patternCanvas, 'repeat');
   }
 
-  paths[currentPathId] = path;
-  render();
-});
+  getRandomFloat(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
-canvas.addEventListener('mousemove', (e) => {
-  if (!currentPathId) return;
+  setEvent() {
+    this.toolbar.addEventListener('click', (e) => {
+      const target = e.target.closest('.toolbar-item');
+      if (!target) return;
 
-  const path = paths[currentPathId];
-  switch (mode) {
-    case 'pen':
-      const point = { x: e.offsetX, y: e.offsetY };
-      path.points.push(point);
-      break;
+      const currTool = document.querySelector('.toolbar-item.selected');
+      if (currTool === target) return;
 
-    case 'rectangle':
-      const { x: x1, y: y1 } = rectInitPoint;
-      const { offsetX: x2, offsetY: y2 } = e;
-      const dx = x2 - x1;
-      const dy = y2 - y1;
+      this.mode = target.getAttribute('data-mode');
+      this.toolItem = target;
+      this.currentStrokeStyle = target.getAttribute('data-color');
 
-      let initPoint = { x: x1, y: y1 };
-
-      if (dx > 0 && dy < 0) {
-        initPoint.y = y2;
-      } else if (dx < 0 && dy > 0) {
-        initPoint.x = x2;
-      } else if (dx < 0 && dy < 0) {
-        initPoint.x = x2;
-        initPoint.y = y2;
+      if (this.mode === 'marker') {
+        this.colorPanel.classList.remove('crayon-mode');
+        this.colorPanel.classList.add('marker-mode');
+      } else if (this.mode === 'crayon') {
+        this.colorPanel.classList.remove('marker-mode');
+        this.colorPanel.classList.add('crayon-mode');
       }
-
-      path.points = [initPoint.x, initPoint.y, Math.abs(dx), Math.abs(dy)];
-
-    default:
-      break;
-  }
-  render();
-});
-
-document.addEventListener('mouseup', (e) => {
-  currentPathId = null;
-  rectInitPoint = null;
-});
-
-function initColorPanel(colorPalette) {
-  const $colorPanel = document.querySelector('.color-panel');
-
-  const $colorfrag = document.createDocumentFragment();
-
-  Object.values(colorPalette).forEach((colors) => {
-    const $colors = document.createElement('ul');
-    $colors.classList.add('color-container');
-
-    Object.values(colors).forEach((color) => {
-      const $color = document.createElement('li');
-      $color.classList.add('color');
-      $color.setAttribute('data-color', color);
-      $color.style.backgroundColor = color;
-
-      $colors.appendChild($color);
+      currTool.classList.remove('selected');
+      target.classList.add('selected');
     });
 
-    $colorfrag.appendChild($colors);
-  });
+    this.colorPanel.addEventListener('click', (e) => {
+      const target = e.target.closest('.color-pick');
+      if (!target) return;
 
-  $colorPanel.appendChild($colorfrag);
+      const color = target.getAttribute('data-color');
+      this.currentStrokeStyle = color;
+      this.toolItem.style.fill = color;
+      this.toolItem.setAttribute('data-color', color);
+    });
 
-  $colorPanel.addEventListener('click', (e) => {
-    if (!e.target.classList.contains('color')) {
-      return;
+    this.canvas.addEventListener('mousedown', (e) => {
+      this.handleMouseDown(e);
+    });
+    this.canvas.addEventListener('mousemove', (e) => {
+      this.handleMouseMove(e);
+    });
+    this.canvas.addEventListener('mouseup', (e) => {
+      this.handleMouseUp(e);
+    });
+    document.body.addEventListener('mouseup', (e) => {
+      this.handleMouseUp(e);
+    });
+  }
+
+  handleMouseDown(e) {
+    this.currentPathId = nanoid();
+
+    const path = {};
+    path.mode = this.mode;
+
+    if (this.mode === 'marker') {
+      path.strokeStyle = this.currentStrokeStyle;
+    } else if (this.mode === 'crayon') {
+      path.strokeStyle = this.getCrayonPattern(this.currentStrokeStyle);
     }
 
-    currentStrokeStyle = e.target.getAttribute('data-color');
-  });
+    const point1 = { x: e.offsetX, y: e.offsetY };
+    const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 };
+
+    path.points = [point1, point2];
+
+    this.paths[this.currentPathId] = path;
+    this.render();
+  }
+
+  handleMouseMove(e) {
+    if (!this.currentPathId) return;
+
+    const path = this.paths[this.currentPathId];
+    const point = { x: e.offsetX, y: e.offsetY };
+    path.points.push(point);
+
+    this.render();
+  }
+
+  handleMouseUp(e) {
+    this.currentPathId = null;
+  }
 }
 
-toolbar.addEventListener('click', (e) => {
-  if (!e.target.classList.contains('toolbar-item')) return;
-  mode = e.target.getAttribute('data-mode');
-});
-
-initCanvas();
-initColorPanel(materialColors);
+new App();

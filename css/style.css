@@ -1,0 +1,65 @@
+@import 'reset.css';
+
+body {
+  background-color: #f6f9fc;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0;
+  height: 100vh;
+}
+
+.world {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.canvas {
+  width: 700px;
+  height: 700px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: crosshair;
+}
+
+.color-panel.crayon-mode .marker,
+.color-panel.marker-mode .crayon {
+  display: none;
+}
+
+.color-pick {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.color-pick:hover {
+  transform: translateX(20px);
+}
+
+.toolbar {
+  position: absolute;
+  bottom: -120px;
+  left: 50%;
+  display: flex;
+  align-items: flex-end;
+  height: 120px;
+  overflow: hidden;
+}
+
+.toolbar-item {
+  margin: 0 4px;
+  height: 100px;
+  background: none;
+  border: none;
+  transition: 0.2s;
+}
+
+.toolbar-item:hover,
+.toolbar-item.selected {
+  transform: translateY(-20px);
+}
