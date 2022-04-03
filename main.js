@@ -1,153 +1,150 @@
 import { nanoid } from 'nanoid';
-import materialColors from './material-colors';
 
-const toolbar = document.querySelector('.toolbar');
-
-const canvas = document.querySelector('.canvas');
-const ctx = canvas.getContext('2d');
-const paths = {};
-let currentPathId = null;
-let currentStrokeStyle = '#000';
-let mode = 'pen';
 const CANVAS_SIZE = 700;
 
-function initCanvas() {
-  // set canvas sizethis.canvas.width = CANVAS_SIZE;
-  canvas.width = CANVAS_SIZE;
-  canvas.height = CANVAS_SIZE;
+class App {
+  constructor() {
+    this.canvas = document.querySelector('.canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.paths = {};
+    this.currentPathId = null;
+    this.currentStrokeStyle = '#000';
+    this.mode = 'marker';
 
-  // set stroke options
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.lineWidth = 10;
-}
+    this.toolbar = document.querySelector('.toolbar');
+    this.colorPanel = document.querySelector('.color-panel');
 
-function render() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  Object.keys(paths).forEach((pathId) => {
-    const { mode, points, strokeStyle } = paths[pathId];
-    ctx.beginPath();
-
-    ctx.strokeStyle = strokeStyle;
-
-    points.forEach((point, i) => {
-      if (i === 0) ctx.moveTo(point.x, point.y);
-      else {
-        const controlPoint = points[i - 1];
-
-        const endPoint = {
-          x: (controlPoint.x + point.x) / 2,
-          y: (controlPoint.y + point.y) / 2,
-        };
-
-        ctx.quadraticCurveTo(
-          controlPoint.x,
-          controlPoint.y,
-          endPoint.x,
-          endPoint.y
-        );
-      }
-    });
-
-    ctx.stroke();
-
-    ctx.closePath();
-  });
-}
-
-function getCrayonPattern(color) {
-  const patternCanvas = document.createElement('canvas');
-  const ctx = patternCanvas.getContext('2d');
-  const size = 100;
-  patternCanvas.width = size;
-  patternCanvas.height = size;
-
-  for (let i = size * size; i--; ) {
-    const x = getRandomFloat(0, size);
-    const y = getRandomFloat(0, size);
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, 1, 1);
+    this.initCanvas();
+    this.setEvent();
   }
 
-  return ctx.createPattern(patternCanvas, 'repeat');
-}
+  initCanvas() {
+    this.canvas.width = CANVAS_SIZE;
+    this.canvas.height = CANVAS_SIZE;
 
-function getRandomFloat(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-canvas.addEventListener('mousedown', (e) => {
-  currentPathId = nanoid();
-
-  const path = {};
-  path.mode = mode;
-
-  if (mode === 'pen') {
-    path.strokeStyle = currentStrokeStyle;
-  } else if (mode === 'crayon') {
-    path.strokeStyle = getCrayonPattern(currentStrokeStyle);
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.lineWidth = 10;
   }
 
-  const point1 = { x: e.offsetX, y: e.offsetY };
-  const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 }; // paint point on click
+  render() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-  path.points = [point1, point2];
+    Object.keys(this.paths).forEach((pathId) => {
+      const { mode, points, strokeStyle } = this.paths[pathId];
+      this.ctx.beginPath();
 
-  paths[currentPathId] = path;
-  render();
-});
+      this.ctx.strokeStyle = strokeStyle;
 
-canvas.addEventListener('mousemove', (e) => {
-  if (!currentPathId) return;
+      points.forEach((point, i) => {
+        if (i === 0) this.ctx.moveTo(point.x, point.y);
+        else {
+          const controlPoint = points[i - 1];
 
-  const path = paths[currentPathId];
-  const point = { x: e.offsetX, y: e.offsetY };
-  path.points.push(point);
+          const endPoint = {
+            x: (controlPoint.x + point.x) / 2,
+            y: (controlPoint.y + point.y) / 2,
+          };
 
-  render();
-});
+          this.ctx.quadraticCurveTo(
+            controlPoint.x,
+            controlPoint.y,
+            endPoint.x,
+            endPoint.y
+          );
+        }
+      });
 
-document.addEventListener('mouseup', (e) => {
-  currentPathId = null;
-});
+      this.ctx.stroke();
 
-function initColorPanel(colorPalette) {
-  const $colorPanel = document.querySelector('.color-panel');
-
-  const $colorfrag = document.createDocumentFragment();
-
-  Object.values(colorPalette).forEach((colors) => {
-    const $colors = document.createElement('ul');
-    $colors.classList.add('color-container');
-
-    Object.values(colors).forEach((color) => {
-      const $color = document.createElement('li');
-      $color.classList.add('color');
-      $color.setAttribute('data-color', color);
-      $color.style.backgroundColor = color;
-
-      $colors.appendChild($color);
+      this.ctx.closePath();
     });
+  }
 
-    $colorfrag.appendChild($colors);
-  });
+  getCrayonPattern(color) {
+    const patternCanvas = document.createElement('canvas');
+    const ctx = patternCanvas.getContext('2d');
+    const size = 100;
+    patternCanvas.width = size;
+    patternCanvas.height = size;
 
-  $colorPanel.appendChild($colorfrag);
-
-  $colorPanel.addEventListener('click', (e) => {
-    if (!e.target.classList.contains('color')) {
-      return;
+    for (let i = size * size; i--; ) {
+      const x = this.getRandomFloat(0, size);
+      const y = this.getRandomFloat(0, size);
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, 1, 1);
     }
 
-    currentStrokeStyle = e.target.getAttribute('data-color');
-  });
+    return ctx.createPattern(patternCanvas, 'repeat');
+  }
+
+  getRandomFloat(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  setEvent() {
+    this.toolbar.addEventListener('click', (e) => {
+      const target = e.target.closest('.toolbar-item');
+      if (!target) return;
+
+      this.mode = target.getAttribute('data-mode');
+    });
+
+    this.colorPanel.addEventListener('click', (e) => {
+      const target = e.target.closest('.color-pick');
+      if (!target) return;
+
+      this.currentStrokeStyle = target.getAttribute('data-color');
+    });
+
+    this.canvas.addEventListener('mousedown', (e) => {
+      this.handleMouseDown(e);
+    });
+    this.canvas.addEventListener('mousemove', (e) => {
+      this.handleMouseMove(e);
+    });
+    this.canvas.addEventListener('mouseup', (e) => {
+      this.handleMouseUp(e);
+    });
+    document.body.addEventListener('mouseup', (e) => {
+      this.handleMouseUp(e);
+    });
+  }
+
+  handleMouseDown(e) {
+    this.currentPathId = nanoid();
+
+    const path = {};
+    path.mode = this.mode;
+
+    if (this.mode === 'marker') {
+      path.strokeStyle = this.currentStrokeStyle;
+    } else if (this.mode === 'crayon') {
+      path.strokeStyle = this.getCrayonPattern(this.currentStrokeStyle);
+    }
+
+    const point1 = { x: e.offsetX, y: e.offsetY };
+    const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 };
+
+    path.points = [point1, point2];
+
+    this.paths[this.currentPathId] = path;
+    this.render();
+  }
+
+  handleMouseMove(e) {
+    if (!this.currentPathId) return;
+
+    const path = this.paths[this.currentPathId];
+    const point = { x: e.offsetX, y: e.offsetY };
+    path.points.push(point);
+
+    this.render();
+  }
+
+  handleMouseUp(e) {
+    this.currentPathId = null;
+  }
 }
 
-toolbar.addEventListener('click', (e) => {
-  if (!e.target.classList.contains('toolbar-item')) return;
-  mode = e.target.getAttribute('data-mode');
-});
-
-initCanvas();
-// initColorPanel(materialColors);
+new App();
