@@ -88,6 +88,12 @@ class App {
       if (!target) return;
 
       this.mode = target.getAttribute('data-mode');
+
+      const currTool = document.querySelector('.toolbar-item.selected');
+      if (currTool === target) return;
+
+      currTool.classList.remove('selected');
+      target.classList.add('selected');
     });
 
     this.colorPanel.addEventListener('click', (e) => {
