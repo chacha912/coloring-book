@@ -2,18 +2,81 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./images/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple Whiteboard</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <title>Coloring Book</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/external-svg-loader@latest/svg-loader.min.js"
+      async
+    ></script>
   </head>
   <body>
-    <div class="toolbar">
-      <button class="toolbar-item pen" data-mode="pen">펜</button>
-      <button class="toolbar-item crayon" data-mode="crayon">색연필</button>
+    <div class="world">
+      <ul class="color-panel crayon-mode">
+        <li class="color-pick" style="fill: #d500f9" data-color="#d500f9">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #651fff" data-color="#651fff">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #0f2d82" data-color="#0f2d82">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #3d5afe" data-color="#3d5afe">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #00b8d4" data-color="#00b8d4">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #05aa4a" data-color="#05aa4a">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #7dea00" data-color="#7dea00">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #ffcc00" data-color="#ffcc00">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #ff6d00" data-color="#ff6d00">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #dd2c00" data-color="#dd2c00">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #774b3b" data-color="#774b3b">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+        <li class="color-pick" style="fill: #212121" data-color="#212121">
+          <svg data-src="./images/crayon.svg" class="crayon"></svg>
+          <svg data-src="./images/marker.svg" class="marker"></svg>
+        </li>
+      </ul>
+      <canvas class="canvas">이 브라우저는 캔버스를 지원하지 않습니다.</canvas>
+      <div class="toolbar">
+        <button class="toolbar-item marker" data-mode="marker">
+          <svg data-src="./images/marker-v.svg"></svg>
+        </button>
+        <button class="toolbar-item crayon selected" data-mode="crayon">
+          <svg data-src="./images/crayon-v.svg"></svg>
+        </button>
+        <button class="toolbar-item eraser" data-mode="eraser">
+          <svg data-src="./images/eraser-v.svg"></svg>
+        </button>
+      </div>
     </div>
-    <div class="color-panel"></div>
-    <canvas class="canvas">이 브라우저는 캔버스를 지원하지 않습니다.</canvas>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
