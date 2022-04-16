@@ -4,16 +4,20 @@ const CANVAS_SIZE = 700;
 
 class App {
   constructor() {
-    this.canvas = document.querySelector('.canvas');
+    this.canvas = document.querySelector('.canvas-draw');
     this.ctx = this.canvas.getContext('2d');
     this.paths = {};
     this.currentPathId = null;
     this.currentStrokeStyle = this.getCrayonPattern('#000');
+    this.currentLineWidth = 10;
     this.mode = 'crayon';
 
     this.toolbar = document.querySelector('.toolbar');
     this.toolItem = document.querySelector('.toolbar-item.selected');
     this.colorPanel = document.querySelector('.color-panel');
+
+    this.cursorCanvas = document.querySelector('.canvas-cursor');
+    this.cursorCanvasContext = this.cursorCanvas.getContext('2d');
 
     this.initCanvas();
     this.setEvent();
@@ -22,10 +26,12 @@ class App {
   initCanvas() {
     this.canvas.width = CANVAS_SIZE;
     this.canvas.height = CANVAS_SIZE;
+    this.cursorCanvas.width = CANVAS_SIZE;
+    this.cursorCanvas.height = CANVAS_SIZE;
 
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
-    this.ctx.lineWidth = 10;
+    this.ctx.lineWidth = this.currentLineWidth;
   }
 
   render() {
@@ -116,15 +122,19 @@ class App {
       this.toolItem.setAttribute('data-color', color);
     });
 
-    this.canvas.addEventListener('mousedown', (e) => {
+    this.cursorCanvas.addEventListener('mousedown', (e) => {
       this.handleMouseDown(e);
     });
-    this.canvas.addEventListener('mousemove', (e) => {
+    this.cursorCanvas.addEventListener('mousemove', (e) => {
       this.handleMouseMove(e);
     });
-    this.canvas.addEventListener('mouseup', (e) => {
+    this.cursorCanvas.addEventListener('mouseup', (e) => {
       this.handleMouseUp(e);
     });
+    this.cursorCanvas.addEventListener('mouseout', () => {
+      this.hideCursor();
+    });
+
     document.body.addEventListener('mouseup', (e) => {
       this.handleMouseUp(e);
     });
@@ -140,6 +150,8 @@ class App {
       path.strokeStyle = this.currentStrokeStyle;
     } else if (this.mode === 'crayon') {
       path.strokeStyle = this.getCrayonPattern(this.currentStrokeStyle);
+    } else if (this.mode === 'eraser') {
+      path.strokeStyle = '#fff'; // background color
     }
 
     const point1 = { x: e.offsetX, y: e.offsetY };
@@ -152,6 +164,7 @@ class App {
   }
 
   handleMouseMove(e) {
+    this.showCursor(e);
     if (!this.currentPathId) return;
 
     const path = this.paths[this.currentPathId];
@@ -163,6 +176,30 @@ class App {
 
   handleMouseUp(e) {
     this.currentPathId = null;
+  }
+
+  showCursor(e) {
+    const ctx = this.cursorCanvasContext;
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'gray';
+
+    const radius = this.currentLineWidth / 2;
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+    ctx.stroke();
+  }
+
+  hideCursor() {
+    this.cursorCanvasContext.clearRect(
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height
+    );
   }
 }
 
