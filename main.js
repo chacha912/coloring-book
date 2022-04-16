@@ -140,6 +140,8 @@ class App {
       path.strokeStyle = this.currentStrokeStyle;
     } else if (this.mode === 'crayon') {
       path.strokeStyle = this.getCrayonPattern(this.currentStrokeStyle);
+    } else if (this.mode === 'eraser') {
+      path.strokeStyle = '#fff'; // background color
     }
 
     const point1 = { x: e.offsetX, y: e.offsetY };
