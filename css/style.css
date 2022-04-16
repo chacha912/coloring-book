@@ -18,13 +18,26 @@ body {
   align-items: center;
 }
 
+.canvas-wrap {
+  position: relative;
+}
+
 .canvas {
   width: 700px;
   height: 700px;
+  cursor: none;
+}
+
+.canvas-draw {
   background-color: white;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  cursor: crosshair;
+}
+
+.canvas-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .color-panel.crayon-mode .marker,
