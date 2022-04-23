@@ -10,3 +10,4 @@ export const lineWidth = writable({
 });
 export const colorCode = writable('#000');
 export const paths = writable({});
+export const imgLists = writable([]);
