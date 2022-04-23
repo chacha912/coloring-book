@@ -23,7 +23,7 @@
 
     const path = {};
     path.mode = $mode;
-    path.lineWidth = $lineWidth;
+    path.lineWidth = $lineWidth[$mode];
 
     if ($mode === 'marker') {
       path.strokeStyle = $colorCode;
@@ -45,7 +45,7 @@
   };
 
   const handleMouseMove = (e) => {
-    showCursor(e, $lineWidth);
+    showCursor(e, $lineWidth[$mode]);
     if (!currentPathId) return;
 
     const point = { x: e.offsetX, y: e.offsetY };
