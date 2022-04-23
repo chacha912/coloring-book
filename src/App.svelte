@@ -1,5 +1,10 @@
 <script>
-  import { ColorPanel, Toolbar, CanvasDraw, CanvasCursor } from './lib/index.js';
+  import {
+    ColorPanel,
+    Toolbar,
+    CanvasDraw,
+    CanvasCursor,
+  } from './lib/index.js';
 </script>
 
 <div class="world">
