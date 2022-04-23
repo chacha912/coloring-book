@@ -6,6 +6,17 @@
     CanvasCursor,
     BrushSize,
   } from './lib/index.js';
+  import { getImage } from './api/main';
+
+  const getSearchImageLists = async (search) => {
+    const result = await getImage(search);
+    console.log(result.data.items);
+  };
+  try {
+    getSearchImageLists('숫자 선잇기 도안');
+  } catch (err) {
+    console.error(err);
+  }
 </script>
 
 <div class="world">
