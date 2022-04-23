@@ -4,11 +4,15 @@
     Toolbar,
     CanvasDraw,
     CanvasCursor,
+    BrushSize,
   } from './lib/index.js';
 </script>
 
 <div class="world">
-  <ColorPanel />
+  <div class="inspector">
+    <ColorPanel />
+    <BrushSize />
+  </div>
   <div class="canvas-wrap">
     <CanvasCursor />
     <CanvasDraw />
