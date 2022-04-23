@@ -1,5 +1,6 @@
 <script>
   import { lineWidth, mode } from '../store.js';
+  import { longpress } from '../util/longpress.js';
 
   const min = 1;
   const max = 100;
@@ -8,6 +9,16 @@
     lineWidth.update((sizes) => {
       return { ...sizes, [$mode]: newSize };
     });
+  };
+
+  const handleSizeDown = () => {
+    const newSize = $lineWidth[$mode] - 1;
+    setBrushSize(newSize < min ? min : newSize);
+  };
+
+  const handleSizeUp = () => {
+    const newSize = $lineWidth[$mode] + 1;
+    setBrushSize(newSize > max ? max : newSize);
   };
 </script>
 
@@ -24,17 +35,11 @@
     value = min > value ? min : value;
     value = max < value ? max : value;
     e.currentTarget.value = '' + value;
-    console.log(value);
 
     setBrushSize(value);
   }}
 />
-<button
-  on:click={() => {
-    const newSize = $lineWidth[$mode] - 1;
-    setBrushSize(newSize < min ? min : newSize);
-  }}>-</button
->
+<button use:longpress on:longpress={handleSizeDown}>-</button>
 <input
   type="range"
   {min}
@@ -45,9 +50,4 @@
     setBrushSize(Number(e.currentTarget.value));
   }}
 />
-<button
-  on:click={() => {
-    const newSize = $lineWidth[$mode] + 1;
-    setBrushSize(newSize > max ? max : newSize);
-  }}>+</button
->
+<button use:longpress on:longpress={handleSizeUp}>+</button>
