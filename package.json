@@ -8,9 +8,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^2.9.2",
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
-    "svelte": "^3.44.0"
+    "prettier-plugin-svelte": "^2.7.0",
+    "svelte": "^3.44.0",
+    "vite": "^2.9.2"
   },
   "dependencies": {
     "nanoid": "^3.3.1"
