@@ -22,32 +22,25 @@
   };
 </script>
 
-<label for="brushSize">size</label>
-<input
-  id="brushSize"
-  type="number"
-  value={$lineWidth[$mode]}
-  {min}
-  {max}
-  on:input={(e) => {
-    let value = Number(e.currentTarget.value);
+<div class="control-item">
+  <label for="brushSize">size</label>
+  <input
+    id="brushSize"
+    type="number"
+    value={$lineWidth[$mode]}
+    {min}
+    {max}
+    on:input={(e) => {
+      let value = Number(e.currentTarget.value);
 
-    value = min > value ? min : value;
-    value = max < value ? max : value;
-    e.currentTarget.value = '' + value;
+      value = min > value ? min : value;
+      value = max < value ? max : value;
+      e.currentTarget.value = '' + value;
 
-    setBrushSize(value);
-  }}
-/>
-<button use:longpress on:longpress={handleSizeDown}>-</button>
-<input
-  type="range"
-  {min}
-  {max}
-  value={$lineWidth[$mode]}
-  name="brushSize"
-  on:input={(e) => {
-    setBrushSize(Number(e.currentTarget.value));
-  }}
-/>
-<button use:longpress on:longpress={handleSizeUp}>+</button>
+      setBrushSize(value);
+    }}
+  />
+  <button use:longpress on:longpress={handleSizeDown}>-</button>
+  <input type="range" {min} {max} value={$lineWidth[$mode]} name="brushSize" />
+  <button use:longpress on:longpress={handleSizeUp}>+</button>
+</div>
