@@ -2,7 +2,7 @@
   import { nanoid } from 'nanoid';
   import { onMount } from 'svelte';
   import { mode, lineWidth, colorCode, paths } from '../store.js';
-  import { getCrayonPattern } from '../util.js';
+  import { getCrayonPattern } from '../util/util.js';
 
   let canvas;
   let ctx;
