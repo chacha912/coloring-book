@@ -1,11 +1,11 @@
 <script>
   import { onDestroy } from 'svelte';
   import { colorCode, mode } from '../store.js';
-  import Tool from './Tool.svelte'
+  import Tool from './Tool.svelte';
 
-	let colors = {
+  let colors = {
     marker: '#000',
-    crayon: '#000'
+    crayon: '#000',
   };
 
   const setTool = (e) => {
@@ -17,19 +17,19 @@
 
     mode.set(newMode);
     colorCode.set(target.getAttribute('data-color'));
-  }
+  };
 
-	const unsubscribe = colorCode.subscribe(color => {
-		colors[$mode] = color;
-	});
+  const unsubscribe = colorCode.subscribe((color) => {
+    colors[$mode] = color;
+  });
 
-	onDestroy(unsubscribe);
+  onDestroy(unsubscribe);
 </script>
 
 <div class="toolbar" on:click={setTool}>
-    <Tool mode="marker" colorCode={colors.marker} selected={$mode === 'marker'}/>
-    <Tool mode="crayon" colorCode={colors.crayon} selected={$mode === 'crayon'}/>
-    <Tool mode="eraser" selected={$mode === 'eraser'}/>
+  <Tool mode="marker" colorCode={colors.marker} selected={$mode === 'marker'} />
+  <Tool mode="crayon" colorCode={colors.crayon} selected={$mode === 'crayon'} />
+  <Tool mode="eraser" selected={$mode === 'eraser'} />
 </div>
 
 <style>
