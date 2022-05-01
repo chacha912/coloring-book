@@ -34,4 +34,8 @@
   .canvas-wrap {
     position: relative;
   }
+
+  .search {
+    margin-left: 20px;
+  }
 </style>
