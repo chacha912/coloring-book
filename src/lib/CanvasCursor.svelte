@@ -18,7 +18,7 @@
     ctx.strokeStyle = 'gray';
   });
 
-  const handleMouseDown = (e) => {
+  const handlePointerDown = (e) => {
     currentPathId = nanoid();
 
     const path = {};
@@ -44,7 +44,7 @@
     paths.set(newPaths);
   };
 
-  const handleMouseMove = (e) => {
+  const handlePointerMove = (e) => {
     showCursor(e, $lineWidth[$mode]);
     if (!currentPathId) return;
 
@@ -56,7 +56,7 @@
     paths.set(newPaths);
   };
 
-  const handleMouseUp = (e) => {
+  const handlePointerUp = (e) => {
     currentPathId = null;
   };
 
@@ -83,18 +83,19 @@
   style:height
   {width}
   {height}
-  on:mousedown={handleMouseDown}
-  on:mousemove={handleMouseMove}
-  on:mouseup={handleMouseUp}
-  on:mouseout={hideCursor}
+  on:pointerdown={handlePointerDown}
+  on:pointermove={handlePointerMove}
+  on:pointerup={handlePointerUp}
+  on:pointerout={hideCursor}
   on:blur={hideCursor}
 />
-<svelte:body on:mouseup={handleMouseUp} />
+<svelte:body on:pointerup={handlePointerUp} />
 
 <style>
   canvas {
     position: absolute;
     top: 0;
     left: 0;
+    touch-action: none;
   }
 </style>
