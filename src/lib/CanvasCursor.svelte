@@ -14,8 +14,6 @@
     ctx = canvas.getContext('2d');
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'gray';
   });
 
   const handlePointerDown = (e) => {

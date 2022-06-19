@@ -6,8 +6,8 @@ export const getCrayonPattern = (color) => {
   patternCanvas.height = size;
 
   for (let i = size * size; i--; ) {
-    const x = getRandomFloat(0, size);
-    const y = getRandomFloat(0, size);
+    const x = getRandomFloat(-1, size + 1);
+    const y = getRandomFloat(-1, size + 1);
     ctx.fillStyle = color;
     ctx.fillRect(x, y, 1, 1);
   }
