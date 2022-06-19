@@ -143,6 +143,7 @@ body {
   align-items: center;
   padding: 50px 0;
   height: 100vh;
+  touch-action: none;
 }
 
 canvas {
