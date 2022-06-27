@@ -5,6 +5,7 @@ import {
   doc,
   onSnapshot,
   setDoc,
+  deleteDoc,
   query,
   orderBy,
   Timestamp,
@@ -21,7 +22,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const firebaseDB = getFirestore(firebaseApp);
 const drawingRef = collection(firebaseDB, 'drawings');
 
-class Gallery {
+class DrawingRepository {
   getDrawings(onUpdate) {
     const q = query(drawingRef, orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -36,12 +37,17 @@ class Gallery {
 
   async addDrawing({ drawingID, thumbnail, drawing, design }) {
     await setDoc(doc(firebaseDB, 'drawings', drawingID), {
+      id: drawingID,
       thumbnail,
       drawing,
       design,
       createdAt: Timestamp.fromDate(new Date()),
     });
   }
+
+  async deleteDrawing(drawingID) {
+    await deleteDoc(doc(firebaseDB, 'drawings', drawingID));
+  }
 }
 
-export default Gallery;
+export default DrawingRepository;

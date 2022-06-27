@@ -4,7 +4,7 @@
   import { paths } from '../store.js';
   import { crayonPatterns } from '../util/util.js';
 
-  export let gallery;
+  export let drawingRepo;
   let canvas;
   let ctx;
   let width = 700;
@@ -15,7 +15,7 @@
   };
 
   const saveDrawing = async () => {
-    await gallery.addDrawing({
+    await drawingRepo.addDrawing({
       drawingID: nanoid(),
       thumbnail: getCanvasImage(),
       drawing: $paths,
