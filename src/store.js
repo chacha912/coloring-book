@@ -9,4 +9,4 @@ export const lineWidth = writable({
   eraser: initialBrushSize,
 });
 export const colorCode = writable('#000000');
-export const paths = writable({});
+export const paths = writable([]);

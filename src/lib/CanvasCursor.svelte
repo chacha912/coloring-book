@@ -16,9 +16,9 @@
   });
 
   const handlePointerDown = (e) => {
-    currentPathId = nanoid();
-
     const path = {};
+    currentPathId = nanoid();
+    path.id = currentPathId;
     path.mode = $mode;
     path.lineWidth = $lineWidth[$mode];
     path.strokeStyle = $mode === 'eraser' ? '#ffffff' : $colorCode;
@@ -27,10 +27,7 @@
     const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 };
     path.points = [point1, point2];
 
-    const newPaths = { ...$paths };
-    newPaths[currentPathId] = path;
-
-    paths.set(newPaths);
+    paths.set([...$paths, path]);
   };
 
   const handlePointerMove = (e) => {
@@ -39,8 +36,8 @@
 
     const point = { x: e.offsetX, y: e.offsetY };
 
-    const newPaths = { ...$paths };
-    newPaths[currentPathId].points.push(point);
+    const newPaths = [...$paths];
+    newPaths.find((p) => p.id === currentPathId).points.push(point);
 
     paths.set(newPaths);
   };

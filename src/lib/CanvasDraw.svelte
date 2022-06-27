@@ -24,7 +24,7 @@
   };
 
   const resetCanvas = () => {
-    paths.set({});
+    paths.set([]);
   };
 
   const render = () => {
@@ -32,8 +32,8 @@
 
     ctx.clearRect(0, 0, width, height);
 
-    Object.keys($paths).forEach((pathId) => {
-      const { points, strokeStyle, lineWidth, mode } = $paths[pathId];
+    $paths.forEach((path) => {
+      const { points, strokeStyle, lineWidth, mode } = path;
       ctx.beginPath();
 
       ctx.strokeStyle =
