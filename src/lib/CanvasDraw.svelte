@@ -23,6 +23,10 @@
     });
   };
 
+  const resetCanvas = () => {
+    paths.set({});
+  };
+
   const render = () => {
     if (!ctx) return;
 
@@ -76,7 +80,10 @@
 <canvas bind:this={canvas} style:width style:height {width} {height}
   >이 브라우저는 캔버스를 지원하지 않습니다.</canvas
 >
-<button on:click={saveDrawing}>save a drawing</button>
+<div class="buttons">
+  <button on:click={resetCanvas}>reset</button>
+  <button on:click={saveDrawing}>save a drawing</button>
+</div>
 
 <style>
   canvas {
@@ -85,10 +92,13 @@
     box-shadow: 0 4px 10px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
-  button {
+  .buttons {
     position: absolute;
-    padding: 4px 8px;
     top: -40px;
     right: 0;
+  }
+
+  button {
+    padding: 4px 8px;
   }
 </style>
