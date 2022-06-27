@@ -8,5 +8,5 @@ export const lineWidth = writable({
   crayon: initialBrushSize,
   eraser: initialBrushSize,
 });
-export const colorCode = writable('#000');
-export const paths = writable({});
+export const colorCode = writable('#000000');
+export const paths = writable([]);

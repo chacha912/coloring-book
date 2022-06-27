@@ -4,8 +4,8 @@
   import Tool from './Tool.svelte';
 
   let colors = {
-    marker: '#000',
-    crayon: '#000',
+    marker: '#000000',
+    crayon: '#000000',
   };
 
   const setTool = (e) => {
@@ -35,11 +35,12 @@
 <style>
   .toolbar {
     position: absolute;
-    bottom: -120px;
     left: 50%;
+    transform: translateX(-50%);
     display: flex;
     align-items: flex-end;
     height: 120px;
+    bottom: -120px;
     overflow: hidden;
   }
 </style>

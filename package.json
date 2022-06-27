@@ -14,6 +14,7 @@
     "vite": "^2.9.2"
   },
   "dependencies": {
-    "nanoid": "^3.3.1"
+    "nanoid": "^3.3.1",
+    "firebase": "^9.8.4"
   }
 }

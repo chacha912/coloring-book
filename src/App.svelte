@@ -5,7 +5,11 @@
     CanvasDraw,
     CanvasCursor,
     BrushSize,
+    Gallery,
   } from './lib/index.js';
+  import DrawingRepository from './service/firebase.js';
+
+  const drawingRepo = new DrawingRepository();
 </script>
 
 <div class="world">
@@ -15,9 +19,10 @@
   </div>
   <div class="canvas-wrap">
     <CanvasCursor />
-    <CanvasDraw />
+    <CanvasDraw {drawingRepo} />
+    <Toolbar />
   </div>
-  <Toolbar />
+  <Gallery {drawingRepo} />
 </div>
 
 <style>
