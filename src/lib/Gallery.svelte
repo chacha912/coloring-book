@@ -14,6 +14,7 @@
   };
 
   const importDrawing = (e) => {
+    if (e.target.classList.contains('delete_btn')) return;
     const drawingID = e.currentTarget.dataset.id;
     paths.set(
       drawings.find((drawingInfo) => drawingInfo.id === drawingID).drawing
