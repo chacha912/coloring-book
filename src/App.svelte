@@ -6,6 +6,14 @@
     CanvasCursor,
     BrushSize,
   } from './lib/index.js';
+  import Gallery from './service/firebase.js';
+
+  const gallery = new Gallery();
+  let drawings = [];
+
+  gallery.getDrawings((data) => {
+    drawings = data;
+  });
 </script>
 
 <div class="world">
@@ -15,9 +23,16 @@
   </div>
   <div class="canvas-wrap">
     <CanvasCursor />
-    <CanvasDraw />
+    <CanvasDraw {gallery} />
+    <Toolbar />
   </div>
-  <Toolbar />
+  <ul class="gallery">
+    {#each drawings as drawing}
+      <li>
+        <img src={drawing.thumbnail} alt="masterpiece" />
+      </li>
+    {/each}
+  </ul>
 </div>
 
 <style>
@@ -29,5 +44,19 @@
 
   .canvas-wrap {
     position: relative;
+  }
+
+  .gallery {
+    margin-left: 10px;
+    width: 100px;
+    height: 700px;
+    overflow-y: auto;
+  }
+  .gallery li {
+    margin-bottom: 10px;
+    border: 1px solid lightgray;
+  }
+  .gallery img {
+    width: 100%;
   }
 </style>

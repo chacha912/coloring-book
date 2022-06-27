@@ -1,22 +1,8 @@
 <script>
   import { onDestroy } from 'svelte';
   import { colorCode, mode } from '../store.js';
+  import { colors } from '../util/util.js';
   import ColorPen from './ColorPen.svelte';
-
-  let colors = [
-    '#d500f9',
-    '#651fff',
-    '#0f2d82',
-    '#3d5afe',
-    '#00b8d4',
-    '#05aa4a',
-    '#7dea00',
-    '#ffcc00',
-    '#ff6d00',
-    '#dd2c00',
-    '#774b3b',
-    '#000000',
-  ];
 
   let panelMode = 'crayon';
 
