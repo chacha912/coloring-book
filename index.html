@@ -6,75 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Coloring Book</title>
     <link rel="stylesheet" href="./css/style.css" />
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/external-svg-loader@latest/svg-loader.min.js"
-      async
-    ></script>
+    <script type="text/javascript" src="https://unpkg.com/external-svg-loader@latest/svg-loader.min.js" async></script>
   </head>
   <body>
     <div class="world">
-      <ul class="color-panel crayon-mode">
+      <ul class="color-panel">
         <li class="color-pick" style="fill: #d500f9" data-color="#d500f9">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #651fff" data-color="#651fff">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #0f2d82" data-color="#0f2d82">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #3d5afe" data-color="#3d5afe">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #00b8d4" data-color="#00b8d4">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #05aa4a" data-color="#05aa4a">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #7dea00" data-color="#7dea00">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #ffcc00" data-color="#ffcc00">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #ff6d00" data-color="#ff6d00">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #dd2c00" data-color="#dd2c00">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #774b3b" data-color="#774b3b">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
         <li class="color-pick" style="fill: #000000" data-color="#000000">
-          <svg data-src="./images/crayon.svg" class="crayon"></svg>
           <svg data-src="./images/marker.svg" class="marker"></svg>
         </li>
       </ul>
       <canvas class="canvas">이 브라우저는 캔버스를 지원하지 않습니다.</canvas>
       <div class="toolbar">
-        <button class="toolbar-item" data-mode="marker" data-color="#000">
+        <button class="toolbar-item selected" data-mode="marker" data-color="#000">
           <svg data-src="./images/marker-v.svg"></svg>
-        </button>
-        <button
-          class="toolbar-item selected"
-          data-mode="crayon"
-          data-color="#000"
-        >
-          <svg data-src="./images/crayon-v.svg"></svg>
         </button>
         <button class="toolbar-item" data-mode="eraser">
           <svg data-src="./images/eraser-v.svg"></svg>

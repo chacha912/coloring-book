@@ -8,9 +8,8 @@ class App {
     this.ctx = this.canvas.getContext('2d');
     this.paths = {};
     this.currentPathId = null;
-    this.currentStrokeStyle = this.getCrayonPattern('#000');
-    this.mode = 'crayon';
-
+    this.currentStrokeStyle = '#000';
+    this.lineWidth = 10;
     this.toolbar = document.querySelector('.toolbar');
     this.toolItem = document.querySelector('.toolbar-item.selected');
     this.colorPanel = document.querySelector('.color-panel');
@@ -25,17 +24,17 @@ class App {
 
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
-    this.ctx.lineWidth = 10;
   }
 
   render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     Object.keys(this.paths).forEach((pathId) => {
-      const { mode, points, strokeStyle } = this.paths[pathId];
+      const { points, strokeStyle, lineWidth } = this.paths[pathId];
       this.ctx.beginPath();
 
       this.ctx.strokeStyle = strokeStyle;
+      this.ctx.lineWidth = lineWidth;
 
       points.forEach((point, i) => {
         if (i === 0) this.ctx.moveTo(point.x, point.y);
@@ -47,12 +46,7 @@ class App {
             y: (controlPoint.y + point.y) / 2,
           };
 
-          this.ctx.quadraticCurveTo(
-            controlPoint.x,
-            controlPoint.y,
-            endPoint.x,
-            endPoint.y
-          );
+          this.ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y);
         }
       });
 
@@ -60,27 +54,6 @@ class App {
 
       this.ctx.closePath();
     });
-  }
-
-  getCrayonPattern(color) {
-    const patternCanvas = document.createElement('canvas');
-    const ctx = patternCanvas.getContext('2d');
-    const size = 100;
-    patternCanvas.width = size;
-    patternCanvas.height = size;
-
-    for (let i = size * size; i--; ) {
-      const x = this.getRandomFloat(0, size);
-      const y = this.getRandomFloat(0, size);
-      ctx.fillStyle = color;
-      ctx.fillRect(x, y, 1, 1);
-    }
-
-    return ctx.createPattern(patternCanvas, 'repeat');
-  }
-
-  getRandomFloat(min, max) {
-    return Math.random() * (max - min) + min;
   }
 
   setEvent() {
@@ -93,15 +66,14 @@ class App {
 
       this.mode = target.getAttribute('data-mode');
       this.toolItem = target;
-      this.currentStrokeStyle = target.getAttribute('data-color');
-
       if (this.mode === 'marker') {
-        this.colorPanel.classList.remove('crayon-mode');
-        this.colorPanel.classList.add('marker-mode');
-      } else if (this.mode === 'crayon') {
-        this.colorPanel.classList.remove('marker-mode');
-        this.colorPanel.classList.add('crayon-mode');
+        this.currentStrokeStyle = target.getAttribute('data-color');
+        this.lineWidth = 10;
+      } else if (this.mode === 'eraser') {
+        this.currentStrokeStyle = '#fff'; // background color
+        this.lineWidth = 100;
       }
+
       currTool.classList.remove('selected');
       target.classList.add('selected');
     });
@@ -135,14 +107,8 @@ class App {
 
     const path = {};
     path.mode = this.mode;
-
-    if (this.mode === 'marker') {
-      path.strokeStyle = this.currentStrokeStyle;
-    } else if (this.mode === 'crayon') {
-      path.strokeStyle = this.getCrayonPattern(this.currentStrokeStyle);
-    } else if (this.mode === 'eraser') {
-      path.strokeStyle = '#fff'; // background color
-    }
+    path.strokeStyle = this.currentStrokeStyle;
+    path.lineWidth = this.lineWidth;
 
     const point1 = { x: e.offsetX, y: e.offsetY };
     const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 };
