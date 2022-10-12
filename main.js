@@ -204,6 +204,14 @@ async function main() {
       document.getElementById('peersCount').innerHTML = Object.entries(peers).length;
     }
   });
+
+  doc.subscribe((event) => {
+    if (event.type === 'local-change') {
+      return;
+    }
+
+    render();
+  });
 }
 
 async function init() {
