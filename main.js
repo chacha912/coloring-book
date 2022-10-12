@@ -185,8 +185,16 @@ async function main() {
   });
   await client.activate();
 
-  const doc = new yorkie.Document('coloring-book');
+  const doc = new yorkie.Document('my-first-document');
   await client.attach(doc);
+
+  doc.update((root) => {
+    root.count = 2;
+    root.obj = {
+      a: 1,
+    };
+    root.arr = [1, 2, 3];
+  });
 
   client.subscribe((event) => {
     if (event.type === 'peers-changed') {
