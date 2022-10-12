@@ -178,3 +178,21 @@ function init() {
 }
 
 init();
+
+async function main() {
+  const client = new yorkie.Client('https://api.yorkie.navercorp.com', {
+    apiKey: 'cd2i0i4klh970ddmkdug',
+  });
+  await client.activate();
+
+  const doc = new yorkie.Document('coloring-book');
+  await client.attach(doc);
+
+  client.subscribe((event) => {
+    if (event.type === 'peers-changed') {
+      const peers = event.value[doc.getKey()];
+      document.getElementById('peersCount').innerHTML = Object.entries(peers).length;
+    }
+  });
+}
+main();
