@@ -10,7 +10,9 @@ let toolItem = document.querySelector('.toolbar-item.selected');
 const colorPanel = document.querySelector('.color-panel');
 
 const CANVAS_SIZE = 700;
-const paths = {};
+// const paths = {};
+let yorkieDoc;
+
 let mode = 'marker';
 let currentPathId = null;
 let currentStrokeStyle = '#000';
@@ -29,7 +31,8 @@ function initCanvas() {
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  // console.log(paths);
+  const paths = yorkieDoc.getRoot().paths;
   Object.keys(paths).forEach((pathId) => {
     const { points, strokeStyle, lineWidth } = paths[pathId];
     ctx.beginPath();
@@ -129,8 +132,10 @@ function onMouseDown(e) {
   const point2 = { x: e.offsetX + 0.001, y: e.offsetY + 0.001 };
 
   path.points = [point1, point2];
-
-  paths[currentPathId] = path;
+  // paths[currentPathId] = path;
+  yorkieDoc.update((root) => {
+    root.paths[currentPathId] = path;
+  });
   render();
 }
 
@@ -138,9 +143,15 @@ function onMouseMove(e) {
   showCursor(e);
   if (!currentPathId) return;
 
-  const path = paths[currentPathId];
-  const point = { x: e.offsetX, y: e.offsetY };
-  path.points.push(point);
+  // const path = paths[currentPathId];
+  // const point = { x: e.offsetX, y: e.offsetY };
+  // path.points.push(point);
+
+  yorkieDoc.update((root) => {
+    const path = root.paths[currentPathId];
+    const point = { x: e.offsetX, y: e.offsetY };
+    path.points.push(point);
+  });
 
   render();
 }
@@ -172,28 +183,19 @@ function hideCursor() {
   cursorCanvasContext.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function init() {
-  initCanvas();
-  setEvent();
-}
-
-init();
-
 async function main() {
   const client = new yorkie.Client('https://api.yorkie.navercorp.com', {
     apiKey: 'cd2i0i4klh970ddmkdug',
   });
   await client.activate();
 
-  const doc = new yorkie.Document('my-first-document');
+  const doc = new yorkie.Document('coloring-book2');
   await client.attach(doc);
-
-  doc.update((root) => {
-    root.count = 2;
-    root.obj = {
-      a: 1,
-    };
-    root.arr = [1, 2, 3];
+  yorkieDoc = doc;
+  yorkieDoc.update((root) => {
+    if (!root.paths) {
+      root.paths = {};
+    }
   });
 
   client.subscribe((event) => {
@@ -203,4 +205,12 @@ async function main() {
     }
   });
 }
-main();
+
+async function init() {
+  initCanvas();
+  setEvent();
+  await main();
+  render();
+}
+
+init();
