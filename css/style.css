@@ -76,3 +76,19 @@ body {
 .toolbar-item.selected {
   transform: translateY(-20px);
 }
+
+.peers {
+  position: absolute;
+  top: -40px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#peersCount {
+  margin-left: 10px;
+  color: #231a1a;
+  font-weight: bold;
+  font-size: 17px;
+}

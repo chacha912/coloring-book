@@ -10,6 +10,10 @@
   </head>
   <body>
     <div class="world">
+      <div class="peers">
+        <svg data-src="./images/peers.svg"></svg>
+        <span id="peersCount">0</span>
+      </div>
       <ul class="color-panel">
         <li class="color-pick" style="fill: #d500f9" data-color="#d500f9">
           <svg data-src="./images/marker.svg" class="marker"></svg>
@@ -61,7 +65,6 @@
         </button>
       </div>
     </div>
-    <div>There are currently <span id="peersCount"></span> peers!</div>
 
     <!-- include yorkie js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/yorkie-js-sdk/0.2.16/yorkie-js-sdk.js"></script>
