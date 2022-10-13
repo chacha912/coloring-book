@@ -183,13 +183,47 @@ function hideCursor() {
   cursorCanvasContext.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function createPeerCursor(color, x, y) {
+  return `
+  <svg 
+    class="cursor"
+    style="transform: translateX(${x}px) translateY(${y}px)" 
+    width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"
+  >
+    <path fill=${color} stroke="#FEFDFB" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" d="M19.83 9.1571C20.5067 8.89395 20.845 8.76237 20.94 8.57633C21.0223 8.41515 21.0198 8.22375 20.9333 8.06478C20.8335 7.8813 20.4918 7.75864 19.8084 7.51333L2.379 1.2566C1.81992 1.0559 1.54037 0.955556 1.35762 1.01884C1.19874 1.07387 1.07387 1.19873 1.01884 1.35762C0.955555 1.54037 1.0559 1.81992 1.2566 2.379L7.51328 19.8085C7.75859 20.4918 7.88124 20.8335 8.06473 20.9333C8.22369 21.0198 8.41509 21.0224 8.57627 20.9401C8.76231 20.8451 8.89389 20.5067 9.15705 19.83L12.0055 12.5054C12.0571 12.3728 12.0829 12.3065 12.1227 12.2507C12.1579 12.2013 12.2012 12.158 12.2507 12.1227C12.3065 12.0829 12.3728 12.0571 12.5053 12.0056L19.83 9.1571Z"/>
+  </svg>
+  `;
+}
+
+function updateMultiCursor(peersObj, myClientID) {
+  const peers = Object.entries(peersObj);
+  const COLORS = ['#DC2626', '#D97706', '#059669', '#7C3AED', '#DB2777'];
+  if (document.getElementById('cursorContainer')) {
+    document.getElementById('cursorContainer').remove();
+  }
+  const cursorContainer = document.createElement('div');
+  cursorContainer.id = 'cursorContainer';
+  cursorContainer.innerHTML = peers
+    .map(([id, { point }], i) => {
+      if (id === myClientID) return;
+      if (!point) return;
+      return createPeerCursor(COLORS[i], point.x, point.y);
+    })
+    .join('');
+  document.body.appendChild(cursorContainer);
+}
+
 async function main() {
   const client = new yorkie.Client('https://api.yorkie.navercorp.com', {
     apiKey: 'cd2i0i4klh970ddmkdug',
+    presence: {
+      point: { x: 0, y: 0 },
+    },
   });
   await client.activate();
+  const myClientID = client.getID();
 
-  const doc = new yorkie.Document('coloring-book2');
+  const doc = new yorkie.Document('coloring-book5');
   await client.attach(doc);
   yorkieDoc = doc;
   yorkieDoc.update((root) => {
@@ -202,6 +236,7 @@ async function main() {
     if (event.type === 'peers-changed') {
       const peers = event.value[doc.getKey()];
       document.getElementById('peersCount').innerHTML = Object.entries(peers).length;
+      updateMultiCursor(peers, myClientID);
     }
   });
 
@@ -211,6 +246,17 @@ async function main() {
     }
 
     render();
+  });
+
+  document.body.addEventListener('mousemove', (e) => {
+    client.updatePresence('point', {
+      x: e.clientX,
+      y: e.clientY,
+    });
+  });
+
+  document.body.addEventListener('mouseleave', () => {
+    client.updatePresence('point', null);
   });
 }
 

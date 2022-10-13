@@ -10,6 +10,7 @@ body {
   align-items: center;
   padding: 50px 0;
   height: 100vh;
+  user-select: none;
 }
 
 .world {
@@ -91,4 +92,11 @@ body {
   color: #231a1a;
   font-weight: bold;
   font-size: 17px;
+}
+
+.cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /*     transition: transform 0.5s cubic-bezier(0.17, 0.93, 0.38, 1); */
 }
